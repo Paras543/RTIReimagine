@@ -1,0 +1,38 @@
+[
+  {
+    "label": "Road repair (classic demo case)",
+    "input_text": "A road near my area was repaired last year. I want to know how much it cost and who received the contract.",
+    "expected_category_contains": "road",
+    "expected_jurisdiction": "Municipal/Local"
+  },
+  {
+    "label": "University funding (student use case)",
+    "input_text": "How much funding did my university receive from the UGC last year?",
+    "expected_category_contains": "education",
+    "expected_jurisdiction": "Central"
+  },
+  {
+    "label": "Ration/PDS issue",
+    "input_text": "My ration shop hasn't given me my full quota for three months. I want records of what was actually supplied.",
+    "expected_category_contains": "welfare",
+    "expected_jurisdiction": "State"
+  },
+  {
+    "label": "Municipal water supply complaint",
+    "input_text": "Our area hasn't had proper water supply for weeks even though the water board says it's fixed. I want to know what work was actually done.",
+    "expected_category_contains": "infrastructure",
+    "expected_jurisdiction": "State"
+  },
+  {
+    "label": "Rejected government application",
+    "input_text": "My application for a housing scheme got rejected and nobody told me why.",
+    "expected_category_contains": "housing",
+    "expected_jurisdiction": "State"
+  },
+  {
+    "label": "Vague / underspecified (tests follow-up question logic)",
+    "input_text": "I want to know what the government is doing with my taxes.",
+    "expected_category_contains": "",
+    "expected_jurisdiction": ""
+  }
+]
