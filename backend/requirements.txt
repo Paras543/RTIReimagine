@@ -15,7 +15,7 @@ scipy
 joblib
 
 # ==============================
-# LLM / Agents
+# LLM / Agents / LangGraph
 # ==============================
 langchain
 langchain-core
@@ -24,6 +24,8 @@ langchain-openai
 langchain-huggingface
 langgraph
 openai
+langchain-google-genai
+langchain-groq
 
 # ==============================
 # Hugging Face
@@ -80,4 +82,3 @@ passlib[bcrypt]
 # ==============================
 pytest
 pytest-asyncio
-
