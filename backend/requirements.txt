@@ -1,0 +1,83 @@
+# ==============================
+# FastAPI Backend
+# ==============================
+fastapi
+uvicorn[standard]
+python-multipart
+
+# ==============================
+# Data Science / ML
+# ==============================
+numpy
+pandas
+scikit-learn
+scipy
+joblib
+
+# ==============================
+# LLM / Agents
+# ==============================
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-huggingface
+langgraph
+openai
+
+# ==============================
+# Hugging Face
+# ==============================
+transformers
+huggingface-hub
+sentence-transformers
+
+# ==============================
+# RAG / Vector Database
+# ==============================
+faiss-cpu
+chromadb
+
+# ==============================
+# Document Processing
+# ==============================
+pypdf
+python-docx
+openpyxl
+
+# ==============================
+# HTTP / API
+# ==============================
+requests
+httpx
+aiofiles
+
+# ==============================
+# Environment Variables
+# ==============================
+python-dotenv
+
+# ==============================
+# Database
+# ==============================
+sqlalchemy
+psycopg2-binary
+
+# ==============================
+# Validation
+# ==============================
+pydantic
+pydantic-settings
+
+# ==============================
+# Authentication
+# ==============================
+python-jose[cryptography]
+passlib[bcrypt]
+
+# ==============================
+# Testing
+# ==============================
+pytest
+pytest-asyncio
+
