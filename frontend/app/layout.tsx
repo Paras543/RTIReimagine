@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -20,10 +21,52 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("light h-full antialiased", "font-sans", geist.variable)}>
-      <body className={`${inter.className} min-h-full flex flex-col`}>
-        {children}
-      </body>
-    </html>
+    <ClerkProvider
+      localization={{
+        signIn: {
+          start: {
+            title: "Citizen Sign In",
+            subtitle: "Access your RTI applications and history",
+            actionText: "Not registered?",
+            actionLink: "Sign up",
+          },
+        },
+        signUp: {
+          start: {
+            title: "Citizen Registration",
+            subtitle: "Provide your name, email & phone number to register",
+            actionText: "Already registered?",
+            actionLink: "Sign in",
+          },
+        },
+      }}
+      appearance={{
+        variables: {
+          colorPrimary: "#001f3f",
+          colorBackground: "#ffffff",
+          borderRadius: "0.5rem",
+          fontFamily: "Inter, sans-serif",
+        },
+        elements: {
+          footerPages: "hidden",
+          modalBackdrop: "bg-black/60 backdrop-blur-xs",
+          card: "shadow-2xl border border-outline-variant/40 rounded-xl overflow-hidden bg-surface-container-lowest",
+          headerTitle: "text-primary font-bold text-xl font-headline-md tracking-tight text-center",
+          headerSubtitle: "text-on-surface-variant text-sm font-body-md text-center",
+          formButtonPrimary: "bg-primary hover:bg-primary-container text-on-primary font-semibold py-2.5 rounded transition-all shadow-sm",
+          socialButtonsBlockButton: "border border-outline-variant hover:bg-surface-container-low transition-colors text-on-surface font-medium",
+          formFieldInput: "border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded bg-surface-container-lowest",
+          footerAction: "border-t border-outline-variant/30 pt-4 mt-3 flex justify-center items-center text-sm font-body-md text-on-surface-variant",
+          footerActionText: "text-on-surface-variant text-sm",
+          footerActionLink: "text-secondary font-bold hover:underline hover:text-secondary-container transition-colors ml-1",
+        },
+      }}
+    >
+      <html lang="en" className={cn("light h-full antialiased", "font-sans", geist.variable)}>
+        <body className={`${inter.className} min-h-full flex flex-col`}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

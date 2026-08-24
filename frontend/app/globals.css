@@ -63,15 +63,9 @@
 
 
 
-  --spacing-sm: 12px;
   --spacing-margin-desktop: auto;
-  --spacing-xl: 80px;
   --spacing-margin-mobile: 16px;
-  --spacing-base: 8px;
-  --spacing-lg: 48px;
   --spacing-gutter: 24px;
-  --spacing-xs: 4px;
-  --spacing-md: 24px;
   --spacing-max-width: 1200px;
 
   --font-body-md: "Inter", sans-serif;
@@ -350,4 +344,76 @@ body {
 
 .animate-step-4 {
   animation: step-pulse-4 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* =========================================================
+   Clerk Customizations: Remove Branding & Keep Sign In/Sign Up Toggle
+   ========================================================= */
+/* Hide Clerk watermark / development badges / external branding ONLY */
+.cl-footerPages,
+.cl-footerPagesLink,
+.cl-internal-b3fm6y,
+.cl-internal-dfeg78,
+.cl-internal-1dauvgg,
+.cl-internal-164478g,
+.cl-internal-1hp5nqm,
+.cl-internal-4g6yqf,
+a[href*="clerk.com"],
+div:has(> a[href*="clerk.com"]),
+[data-localization-key*="securedBy"],
+[data-localization-key*="developmentMode"],
+[data-localization-key="footerPageLink__help"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Ensure Sign In / Sign Up toggle footer is clean and visible */
+.cl-footerAction {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.cl-footerActionLink {
+  color: var(--color-secondary, #9a4600) !important;
+  font-weight: 700 !important;
+}
+
+.cl-footerActionLink:hover {
+  text-decoration: underline !important;
+  color: var(--color-secondary-container, #fd8534) !important;
+}
+
+.cl-modalBackdrop {
+  backdrop-filter: blur(4px) !important;
+  background-color: rgba(0, 15, 30, 0.65) !important;
+}
+
+/* Indian Flag banner and tricolor accent above Clerk card / modal */
+.cl-card {
+  position: relative !important;
+  border-top: 4px solid #fd8534 !important;
+}
+
+.cl-header {
+  position: relative !important;
+  padding-top: 1rem !important;
+}
+
+.cl-header::before {
+  content: "" !important;
+  display: block !important;
+  width: 44px !important;
+  height: 28px !important;
+  margin: 0 auto 12px auto !important;
+  background-image: url("https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15)) !important;
 }

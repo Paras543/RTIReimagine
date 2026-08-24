@@ -18,5 +18,8 @@ class Settings:
         "CORS_ORIGINS", "http://localhost:3000"
     ).split(",")
 
+    # Clerk authentication
+    clerk_secret_key: str = os.getenv("CLERK_SECRET_KEY", "")
+
 
 settings = Settings()

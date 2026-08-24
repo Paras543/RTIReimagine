@@ -42,8 +42,7 @@ def get_llm():
 
 
 def _structured(model_cls):
-    # json_mode keeps this compatible with Groq/Gemini/OpenAI-compatible endpoints.
-    return get_llm().with_structured_output(model_cls, method="json_mode")
+    return get_llm().with_structured_output(model_cls)
 
 
 def _load_authorities() -> list[dict]:
@@ -291,3 +290,4 @@ draft_graph = build_draft_graph()
 quality_graph = build_quality_graph()
 response_graph = build_response_graph()
 appeal_graph = build_appeal_graph()
+

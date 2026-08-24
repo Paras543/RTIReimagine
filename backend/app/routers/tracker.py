@@ -7,7 +7,8 @@ building real government integration.
 """
 import hashlib
 from datetime import date, timedelta
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from app.auth import verify_clerk_token
 from app.models.schemas import ApplicationStatus
 
 router = APIRouter()
@@ -16,7 +17,11 @@ STAGES = ["Submitted", "Received", "Processing", "Response Received"]
 
 
 @router.get("/applications/{application_id}", response_model=ApplicationStatus)
-def get_application_status(application_id: str, authority_name: str = "Public Authority"):
+def get_application_status(
+    application_id: str,
+    authority_name: str = "Public Authority",
+    _: dict = Depends(verify_clerk_token),
+):
     # Deterministic "randomness" so the same ID always returns the same demo state.
     seed = int(hashlib.sha256(application_id.encode()).hexdigest(), 16)
     stage_index = seed % len(STAGES)
