@@ -144,20 +144,40 @@ export default function FaqPage() {
               </button>
 
               {/* Track Status */}
-              <Link
-                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/track"
-              >
-                Track Status
-              </Link>
+              {isSignedIn ? (
+                <Link
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
+                  href="/track"
+                >
+                  Track Status
+                </Link>
+              ) : (
+                <SignInButton mode="modal">
+                  <button
+                    className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px] cursor-pointer"
+                  >
+                    Track Status
+                  </button>
+                </SignInButton>
+              )}
 
               {/* My History */}
-              <Link
-                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/history"
-              >
-                My History
-              </Link>
+              {isSignedIn ? (
+                <Link
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
+                  href="/history"
+                >
+                  My History
+                </Link>
+              ) : (
+                <SignInButton mode="modal">
+                  <button
+                    className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px] cursor-pointer"
+                  >
+                    My History
+                  </button>
+                </SignInButton>
+              )}
 
 
               {/* FAQ - Active */}

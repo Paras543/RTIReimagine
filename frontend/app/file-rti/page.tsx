@@ -371,12 +371,28 @@ the CPIO is mandated to provide information within 30 days.
             <span className="text-primary font-bold border-b-2 border-secondary-container flex items-center h-full px-3 text-[15px]">
               File RTI
             </span>
-            <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/track">
-              Track Status
-            </Link>
-            <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/history">
-              My History
-            </Link>
+            {isSignedIn ? (
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/track">
+                Track Status
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  Track Status
+                </button>
+              </SignInButton>
+            )}
+            {isSignedIn ? (
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/history">
+                My History
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  My History
+                </button>
+              </SignInButton>
+            )}
             <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/faq">
               FAQ
             </Link>
@@ -391,12 +407,22 @@ the CPIO is mandated to provide information within 30 days.
                 </button>
               </SignInButton>
             )}
-            <Link
-              href="/track"
-              className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
-            >
-              Track Status
-            </Link>
+            {isSignedIn ? (
+              <Link
+                href="/track"
+                className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
+              >
+                Track Status
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button
+                  className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
+                >
+                  Track Status
+                </button>
+              </SignInButton>
+            )}
           </div>
         </div>
       </header>

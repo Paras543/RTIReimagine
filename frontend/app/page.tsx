@@ -133,23 +133,44 @@ export default function Home() {
             </button>
 
             {/* Track Status */}
-            <Link
-              id="nav-track-status"
-              className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium"
-              href="/track"
-            >
-              Track Status
-            </Link>
+            {isSignedIn ? (
+              <Link
+                id="nav-track-status"
+                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium"
+                href="/track"
+              >
+                Track Status
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button
+                  id="nav-track-status"
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium cursor-pointer"
+                >
+                  Track Status
+                </button>
+              </SignInButton>
+            )}
 
             {/* My History */}
-            <Link
-              id="nav-my-history"
-              className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium"
-              href="/history"
-            >
-              My History
-            </Link>
-
+            {isSignedIn ? (
+              <Link
+                id="nav-my-history"
+                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium"
+                href="/history"
+              >
+                My History
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button
+                  id="nav-my-history"
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium cursor-pointer"
+                >
+                  My History
+                </button>
+              </SignInButton>
+            )}
 
             {/* FAQ */}
             <Link
@@ -225,7 +246,8 @@ export default function Home() {
                 {isSignedIn ? (
                   <Button
                     variant="outline"
-                    className="bg-surface-container-lowest border border-outline-variant text-primary font-label-md text-base font-semibold px-6 h-12 rounded hover:bg-surface-container-low transition-colors flex justify-center items-center gap-2"
+                    onClick={() => router.push("/track")}
+                    className="bg-surface-container-lowest border border-outline-variant text-primary font-label-md text-base font-semibold px-6 h-12 rounded hover:bg-surface-container-low transition-colors flex justify-center items-center gap-2 cursor-pointer"
                   >
                     <Search className="h-5 w-5" />
                     Track My Application
@@ -332,42 +354,88 @@ export default function Home() {
                 </Link>
 
                 {/* Action Card 3: Track Application */}
-                <Link
-                  href="/track"
-                  className="group bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200 hover:shadow-md hover:-translate-y-1 relative overflow-hidden flex flex-col h-full text-left cursor-pointer"
-                >
-                  <div className="h-12 w-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <FileSearch className="h-6 w-6" />
-                  </div>
-                  <h4 className="font-headline-md text-xl text-on-surface font-bold mb-2">
-                    Track Application
-                  </h4>
-                  <p className="font-body-md text-sm text-on-surface-variant flex-grow leading-relaxed">
-                    Check the current status and view responses for your submitted RTI applications.
-                  </p>
-                  <div className="mt-5 flex items-center text-primary font-label-md text-sm font-semibold group-hover:translate-x-1 transition-transform">
-                    Check status <ArrowRight className="ml-1 h-4 w-4" />
-                  </div>
-                </Link>
+                {isSignedIn ? (
+                  <Link
+                    href="/track"
+                    className="group bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200 hover:shadow-md hover:-translate-y-1 relative overflow-hidden flex flex-col h-full text-left cursor-pointer"
+                  >
+                    <div className="h-12 w-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                      <FileSearch className="h-6 w-6" />
+                    </div>
+                    <h4 className="font-headline-md text-xl text-on-surface font-bold mb-2">
+                      Track Application
+                    </h4>
+                    <p className="font-body-md text-sm text-on-surface-variant flex-grow leading-relaxed">
+                      Check the current status and view responses for your submitted RTI applications.
+                    </p>
+                    <div className="mt-5 flex items-center text-primary font-label-md text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                      Check status <ArrowRight className="ml-1 h-4 w-4" />
+                    </div>
+                  </Link>
+                ) : (
+                  <SignInButton mode="modal">
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className="group bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200 hover:shadow-md hover:-translate-y-1 relative overflow-hidden flex flex-col h-full text-left cursor-pointer"
+                    >
+                      <div className="h-12 w-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                        <FileSearch className="h-6 w-6" />
+                      </div>
+                      <h4 className="font-headline-md text-xl text-on-surface font-bold mb-2">
+                        Track Application
+                      </h4>
+                      <p className="font-body-md text-sm text-on-surface-variant flex-grow leading-relaxed">
+                        Check the current status and view responses for your submitted RTI applications.
+                      </p>
+                      <div className="mt-5 flex items-center text-primary font-label-md text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                        Sign in to track <ArrowRight className="ml-1 h-4 w-4" />
+                      </div>
+                    </div>
+                  </SignInButton>
+                )}
 
                 {/* Action Card 4: View History */}
-                <Link
-                  href="/history"
-                  className="group bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200 hover:shadow-md hover:-translate-y-1 relative overflow-hidden flex flex-col h-full text-left cursor-pointer"
-                >
-                  <div className="h-12 w-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                    <History className="h-6 w-6" />
-                  </div>
-                  <h4 className="font-headline-md text-xl text-on-surface font-bold mb-2">
-                    View History
-                  </h4>
-                  <p className="font-body-md text-sm text-on-surface-variant flex-grow leading-relaxed">
-                    Access your complete archive of past RTI requests, appeals, and official responses.
-                  </p>
-                  <div className="mt-5 flex items-center text-primary font-label-md text-sm font-semibold group-hover:translate-x-1 transition-transform">
-                    Go to dashboard <ArrowRight className="ml-1 h-4 w-4" />
-                  </div>
-                </Link>
+                {isSignedIn ? (
+                  <Link
+                    href="/history"
+                    className="group bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200 hover:shadow-md hover:-translate-y-1 relative overflow-hidden flex flex-col h-full text-left cursor-pointer"
+                  >
+                    <div className="h-12 w-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                      <History className="h-6 w-6" />
+                    </div>
+                    <h4 className="font-headline-md text-xl text-on-surface font-bold mb-2">
+                      View History
+                    </h4>
+                    <p className="font-body-md text-sm text-on-surface-variant flex-grow leading-relaxed">
+                      Access your complete archive of past RTI requests, appeals, and official responses.
+                    </p>
+                    <div className="mt-5 flex items-center text-primary font-label-md text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                      Go to dashboard <ArrowRight className="ml-1 h-4 w-4" />
+                    </div>
+                  </Link>
+                ) : (
+                  <SignInButton mode="modal">
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className="group bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-200 hover:shadow-md hover:-translate-y-1 relative overflow-hidden flex flex-col h-full text-left cursor-pointer"
+                    >
+                      <div className="h-12 w-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-on-surface-variant group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                        <History className="h-6 w-6" />
+                      </div>
+                      <h4 className="font-headline-md text-xl text-on-surface font-bold mb-2">
+                        View History
+                      </h4>
+                      <p className="font-body-md text-sm text-on-surface-variant flex-grow leading-relaxed">
+                        Access your complete archive of past RTI requests, appeals, and official responses.
+                      </p>
+                      <div className="mt-5 flex items-center text-primary font-label-md text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                        Sign in to view <ArrowRight className="ml-1 h-4 w-4" />
+                      </div>
+                    </div>
+                  </SignInButton>
+                )}
 
               </div>
             </div>

@@ -6,7 +6,7 @@ and history records for filed RTI applications.
 import hashlib
 from datetime import date, timedelta
 from typing import Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.auth import optional_clerk_token
 from app.models.schemas import (
     ApplicationHistoryItem,
@@ -148,9 +148,12 @@ KNOWN_APPLICATIONS = [
 def get_applications(
     status_filter: Optional[str] = Query(None, description="all | active | completed"),
     search: Optional[str] = Query(None, description="Search query by registration number or authority"),
-    _: Optional[dict] = Depends(optional_clerk_token),
+    user: Optional[dict] = Depends(optional_clerk_token),
 ):
     """Retrieve history of all submitted RTI applications and appeals."""
+    if not user:
+        return ApplicationHistoryResponse(items=[], total_count=0)
+
     items = []
     for app in KNOWN_APPLICATIONS:
         # Filter by status
@@ -190,10 +193,15 @@ def get_applications(
 def get_application_status(
     application_id: str,
     authority_name: str = "Public Authority",
-    _: Optional[dict] = Depends(optional_clerk_token),
+    user: Optional[dict] = Depends(optional_clerk_token),
 ):
-
     """Get status timeline and details for a specific RTI application."""
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required to track application details.",
+        )
+
     # Check if this matches a known application
     for app in KNOWN_APPLICATIONS:
         if app["application_id"].lower() == application_id.strip().lower():
