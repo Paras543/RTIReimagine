@@ -10,6 +10,8 @@ from app.routers import (
     tracker,
     response_analyzer,
     appeal,
+    manual_filing,
+    copilot,
 )
 
 app = FastAPI(
@@ -33,6 +35,10 @@ app.include_router(quality.router, prefix="/api", tags=["quality"])
 app.include_router(tracker.router, prefix="/api", tags=["tracker"])
 app.include_router(response_analyzer.router, prefix="/api", tags=["response"])
 app.include_router(appeal.router, prefix="/api", tags=["appeal"])
+app.include_router(manual_filing.router, prefix="/api", tags=["manual-filing"])
+app.include_router(copilot.router, prefix="/api", tags=["copilot"])
+
+
 
 
 @app.get("/api/health")

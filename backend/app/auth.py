@@ -74,3 +74,26 @@ def verify_clerk_token(
         return payload
     except (JWTError, httpx.HTTPError, Exception):
         raise credentials_exception
+
+
+_optional_bearer_scheme = HTTPBearer(auto_error=False)
+
+
+def optional_clerk_token(
+    credentials: HTTPAuthorizationCredentials | None = Depends(_optional_bearer_scheme),
+) -> dict | None:
+    """Optional JWT validation dependency. Returns payload if valid, None otherwise."""
+    if not credentials:
+        return None
+    try:
+        jwks = _get_jwks()
+        payload = jwt.decode(
+            credentials.credentials,
+            jwks,
+            algorithms=["RS256"],
+            options={"verify_aud": False},
+        )
+        return payload
+    except Exception:
+        return None
+

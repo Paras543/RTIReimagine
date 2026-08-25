@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
 import {
   Search,
@@ -15,6 +16,7 @@ import {
   Menu,
 } from "lucide-react";
 import { FileRtiChoiceModal } from "@/components/file-rti-choice-modal";
+
 
 interface FaqItem {
   id: string;
@@ -85,8 +87,10 @@ const FAQ_DATA: FaqItem[] = [
 const CATEGORIES = ["All", "General", "Filing", "Fees", "Status", "Appeals"] as const;
 
 export default function FaqPage() {
+  const router = useRouter();
   const { isSignedIn } = useAuth();
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [openAccordionId, setOpenAccordionId] = useState<string | null>("auth-1");
@@ -142,7 +146,7 @@ export default function FaqPage() {
               {/* Track Status */}
               <Link
                 className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/"
+                href="/track"
               >
                 Track Status
               </Link>
@@ -150,10 +154,11 @@ export default function FaqPage() {
               {/* My History */}
               <Link
                 className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/"
+                href="/history"
               >
                 My History
               </Link>
+
 
               {/* FAQ - Active */}
               <Link
@@ -414,11 +419,15 @@ export default function FaqPage() {
         onClose={() => setIsChoiceModalOpen(false)}
         onSelectCopilot={() => {
           setIsChoiceModalOpen(false);
+          router.push("/copilot");
         }}
+
         onSelectManual={() => {
           setIsChoiceModalOpen(false);
+          router.push("/file-rti");
         }}
       />
+
     </div>
   );
 }

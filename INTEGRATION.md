@@ -117,24 +117,83 @@ Run this on `full_text` from step 3 before letting the user "submit".
 ---
 
 ## 5. GET /api/applications/{application_id}?authority_name=...
-Mock tracker — no real submission happens; pass any ID string (e.g. one you
-generate client-side like `RTI-${Date.now()}`) and it returns a
-deterministic fake status for demo purposes.
+Status tracker and timeline intelligence endpoint.
 
 **Response**
 ```json
 {
-  "application_id": "RTI-10291",
-  "authority_name": "Municipal Corporation",
-  "submitted_date": "2026-08-01",
+  "application_id": "RTI/2026/XXXXXXX",
+  "authority_name": "Ministry of Home Affairs",
+  "department": "Internal Security Division, Central Secretariat",
+  "submitted_date": "Aug 23, 2026",
+  "type": "RTI Request",
   "stage": "Processing",
-  "questions": [],
-  "days_remaining": 12
+  "status_label": "Under Process",
+  "estimated_resolution": "Sep 22, 2026",
+  "days_remaining": 28,
+  "questions": [
+    "Certified copy of administrative sanctions for project contracts."
+  ],
+  "timeline": [
+    {
+      "title": "Request Submitted",
+      "date_time": "Aug 23, 2026 • 10:45 AM",
+      "description": "Application successfully logged into the central portal.",
+      "status": "completed",
+      "assigned_to": null
+    },
+    {
+      "title": "Received by Nodal Officer",
+      "date_time": "Aug 24, 2026 • 09:15 AM",
+      "description": "Application verified and acknowledged by the nodal authority.",
+      "status": "completed",
+      "assigned_to": null
+    },
+    {
+      "title": "Forwarded to CPIO",
+      "date_time": "Aug 25, 2026 • 02:30 PM",
+      "description": "Assigned to: Central Public Information Officer (Internal Security Div.)",
+      "status": "completed",
+      "assigned_to": "Central Public Information Officer (Internal Security Div.)"
+    },
+    {
+      "title": "Response Pending",
+      "date_time": "Estimated resolution by Sep 22, 2026",
+      "description": "Statutory processing under Section 7(1) of the RTI Act.",
+      "status": "current",
+      "assigned_to": null
+    }
+  ],
+  "can_appeal": false
 }
 ```
 `stage` is one of `"Submitted" | "Received" | "Processing" | "Response Received"`.
 
 ---
+
+## 5b. GET /api/applications?status_filter=all|active|completed&search=...
+Retrieve history of applications.
+
+**Response**
+```json
+{
+  "items": [
+    {
+      "application_id": "RTI/2026/XXXXXXX",
+      "authority_name": "Ministry of Home Affairs",
+      "submitted_date": "Aug 23, 2026",
+      "type": "RTI Request",
+      "status": "Under Process",
+      "stage": "Processing",
+      "days_remaining": 28
+    }
+  ],
+  "total_count": 1
+}
+```
+
+---
+
 
 ## 6. POST /api/analyze-response
 User pastes the government's reply text; you send back the original
@@ -186,6 +245,86 @@ Only offer this button if `partial_count` or `unanswered_count` > 0 from step 6.
 
 ---
 
+## 8. POST /api/manual-filing/submit
+Submit a complete manual RTI filing request and register it directly in the tracker.
+
+**Request**
+```json
+{
+  "applicant": {
+    "full_name": "Rajesh Kumar Sharma",
+    "email": "rajesh.ks@example.com",
+    "mobile": "9876543210",
+    "address": "12, Central Secretariat Lane",
+    "state": "DL",
+    "district": "New Delhi",
+    "pincode": "110001"
+  },
+  "category": {
+    "is_bpl": false,
+    "bpl_card_number": null,
+    "bpl_certificate_url": null,
+    "category_name": "Infrastructure & Transport"
+  },
+  "authority": {
+    "ministry": "Ministry of Road Transport and Highways",
+    "department": "National Highways Authority of India (NHAI)"
+  },
+  "subject": "Details regarding highway expansion",
+  "request_text": "1. Please provide a copy of the original project timeline...",
+  "attached_documents": ["supporting_notice.pdf"]
+}
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "application_id": "RTI/2026/7829142",
+  "authority_name": "Ministry of Road Transport and Highways",
+  "department": "National Highways Authority of India (NHAI)",
+  "submitted_date": "Aug 25, 2026",
+  "status": "Under Process",
+  "message": "Your RTI application has been successfully filed with the central repository.",
+  "fee_amount": 10.0,
+  "receipt_id": "REC-AB8291KZ"
+}
+```
+
+---
+
+## 9. POST /api/copilot/auto-draft
+AI Copilot engine with RAG (Retrieval-Augmented Generation) document layer. Auto-identifies competent authority, extracts document references, and prepares a structured RTI draft.
+
+**Request**
+```json
+{
+  "query_text": "Delay in construction of road expansion near Jaipur bypass, contractor penalties, and timeline",
+  "document_name": "NHAI_Tender_Notice_2025.pdf",
+  "document_content": "Tender Reference NIT-2025/NH-48/W-912, Sanctioned Amount: Rs. 48.5 Crore..."
+}
+```
+
+**Response**
+```json
+{
+  "inferred_category": "Infrastructure & Transport",
+  "recommended_ministry": "Ministry of Road Transport and Highways",
+  "recommended_department": "National Highways Authority of India (NHAI)",
+  "jurisdiction_reason": "Central apex body governing National Highways, tenders, and construction oversight.",
+  "subject": "Information sought under RTI Act 2005 regarding Delay in construction of road expansion near Jaipur bypass.",
+  "structured_rti_text": "Subject: ...\nTo: The Central Public Information Officer (CPIO)\n...",
+  "char_count": 640,
+  "extracted_rag_facts": ["File/Tender Reference: NIT-2025/NH-48/W-912", "Sanctioned Amount: 48.5 Crore"],
+  "key_questions": [
+    "Please provide certified copies of all administrative sanctions...",
+    "What is the current official percentage of physical progress achieved..."
+  ]
+}
+```
+
+---
+
 ## Notes
 - All error responses are standard FastAPI: non-2xx status with a JSON body
   containing `detail`.
@@ -193,3 +332,5 @@ Only offer this button if `partial_count` or `unanswered_count` > 0 from step 6.
   looks out of date — these examples are illustrative, not auto-generated.
 - Full interactive docs (try requests live): run the backend, visit
   http://localhost:8000/docs
+
+

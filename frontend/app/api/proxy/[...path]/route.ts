@@ -23,28 +23,48 @@ async function proxyRequest(
   req: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
 ) {
-  // 1. Verify Clerk session server-side
-  const { getToken } = await auth();
-  const token = await getToken();
+  // 1. Check Clerk session server-side
+  let token: string | null = null;
+  try {
+    const authObj = await auth();
+    token = await authObj.getToken();
+  } catch {
+    // Guest/unauthenticated
+  }
 
-  if (!token) {
+  // 2. Build the upstream FastAPI URL: /api/proxy/intent → /api/intent
+  const { path } = await params;
+  const pathStr = path.join("/");
+  const isPublicRoute =
+    pathStr.startsWith("applications") ||
+    pathStr.startsWith("health") ||
+    pathStr.startsWith("manual-filing") ||
+    pathStr.startsWith("copilot") ||
+    pathStr.startsWith("analyze-response") ||
+    pathStr.startsWith("appeal");
+
+
+
+
+  if (!token && !isPublicRoute) {
     return NextResponse.json(
       { detail: "Authentication required. Please sign in to continue." },
       { status: 401 }
     );
   }
 
-  // 2. Build the upstream FastAPI URL: /api/proxy/intent → /api/intent
-  const { path } = await params;
   const upstreamPath = "/api/" + path.join("/");
   const searchParams = req.nextUrl.searchParams.toString();
   const upstreamUrl = `${BACKEND_URL}${upstreamPath}${searchParams ? `?${searchParams}` : ""}`;
 
-  // 3. Forward the request with the Clerk JWT attached
+  // 3. Forward the request with the Clerk JWT attached if present
   const headers = new Headers({
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
   });
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
 
   const body =
     req.method !== "GET" && req.method !== "HEAD"
