@@ -27,6 +27,9 @@ import {
   Check,
 } from "lucide-react";
 
+import { useLanguage } from "@/lib/language-context";
+import { LanguageSelector } from "@/components/language-selector";
+
 // State and District Data for India
 const STATE_DISTRICT_MAP: Record<string, string[]> = {
   DL: ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
@@ -42,29 +45,50 @@ const STATE_DISTRICT_MAP: Record<string, string[]> = {
 };
 
 // Sample realistic queries for 1-click citizen guidance
-const SAMPLE_QUERIES = [
-  {
-    title: "NH-48 Highway Expansion Delay",
-    query: "Delay in construction of National Highway 48 expansion near Jaipur bypass. Seeking copy of original timeline, physical progress, reasons for delay, and details of penalties levied on the contractor.",
-  },
-  {
-    title: "PDS Ration Quota & Shop Allocation",
-    query: "Irregular food grain distribution at Fair Price Shop. Seeking monthly allocation records of wheat and rice, stock register for past 6 months, and active list of registered AAY/PHH cardholders.",
-  },
-  {
-    title: "Hospital Tender & Medicine Stocks",
-    query: "Seeking sanctioned vs actual working strength of medical officers at Central District Hospital, procurement details of essential life-saving medicines, and operational log of the ICU oxygen plant.",
-  },
-  {
-    title: "University Scholarship Fund Disbursement",
-    query: "Delay in disbursement of Post-Matric Merit Scholarship grant for current academic year. Seeking total funds received, number of beneficiaries approved, and reasons for pending disbursals.",
-  },
-];
-
+const SAMPLE_QUERIES_BY_LANG = {
+  en: [
+    {
+      title: "NH-48 Highway Expansion Delay",
+      query: "Delay in construction of National Highway 48 expansion near Jaipur bypass. Seeking copy of original timeline, physical progress, reasons for delay, and details of penalties levied on the contractor.",
+    },
+    {
+      title: "PDS Ration Quota & Shop Allocation",
+      query: "Irregular food grain distribution at Fair Price Shop. Seeking monthly allocation records of wheat and rice, stock register for past 6 months, and active list of registered AAY/PHH cardholders.",
+    },
+    {
+      title: "Hospital Tender & Medicine Stocks",
+      query: "Seeking sanctioned vs actual working strength of medical officers at Central District Hospital, procurement details of essential life-saving medicines, and operational log of the ICU oxygen plant.",
+    },
+    {
+      title: "University Scholarship Fund Disbursement",
+      query: "Delay in disbursement of Post-Matric Merit Scholarship grant for current academic year. Seeking total funds received, number of beneficiaries approved, and reasons for pending disbursals.",
+    },
+  ],
+  hi: [
+    {
+      title: "एनएच-48 हाईवे निर्माण में देरी",
+      query: "जयपुर बाईपास के पास राष्ट्रीय राजमार्ग 48 के विस्तार कार्य में देरी। मूल समय-सीमा की प्रतिलिपि, भौतिक प्रगति, देरी के कारण और ठेकेदार पर लगाए गए जुर्माने का विवरण चाहिए।",
+    },
+    {
+      title: "पीडीएस राशन कोटा व दुकान आवंटन",
+      query: "उचित मूल्य की दुकान पर खाद्यान्न वितरण में अनियमितता। पिछले 6 महीनों के गेहूं-चावल आवंटन रिकॉर्ड, स्टॉक रजिस्टर और अंत्योदय/बीपीएल कार्डधारकों की सक्रिय सूची प्रदान करें।",
+    },
+    {
+      title: "अस्पताल दवा स्टॉक व डॉक्टर पद",
+      query: "केंद्रीय जिला अस्पताल में स्वीकृत व कार्यरत चिकित्सा अधिकारियों की संख्या, आवश्यक जीवन रक्षक दवाओं की खरीद विवरण और आईसीयू ऑक्सीजन प्लांट की लॉगबुक की प्रतिलिपि चाहिए।",
+    },
+    {
+      title: "छात्रवृत्ति राशि वितरण में विलंब",
+      query: "चालू शैक्षणिक वर्ष के लिए पोस्ट-मैट्रिक मेरिट छात्रवृत्ति के वितरण में देरी। प्राप्त कुल अनुदान, स्वीकृत लाभार्थियों की संख्या और लंबित भुगतानों के कारणों का विवरण चाहिए।",
+    },
+  ],
+};
 
 export default function CopilotPage() {
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
+  const { language, t } = useLanguage();
+  const sampleQueries = SAMPLE_QUERIES_BY_LANG[language] || SAMPLE_QUERIES_BY_LANG.en;
 
 
   // Copilot Flow Stage: 1: Prompt & RAG, 2: Auto-filled Review, 3: Dummy Payment, 4: Success Confirmation
@@ -300,6 +324,80 @@ the CPIO is mandated to provide information within 30 days.
     URL.revokeObjectURL(url);
   };
 
+  if (isLoaded && !isSignedIn) {
+    return (
+      <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+        {/* Top Header */}
+        <header className="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-50 shadow-xs">
+          <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-16">
+            <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
+              <Landmark className="h-6 w-6 text-primary shrink-0" />
+              <span>{t.portalTitle}</span>
+            </Link>
+            <nav className="hidden md:flex gap-6 items-center h-full">
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
+                {t.navHome}
+              </Link>
+              <span className="text-primary font-bold border-b-2 border-secondary-container flex items-center h-full px-3 text-[15px] gap-1.5">
+                <Bot className="h-4 w-4 text-primary" /> {t.navCopilot}
+              </span>
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  {t.navTrackStatus}
+                </button>
+              </SignInButton>
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  {t.navMyHistory}
+                </button>
+              </SignInButton>
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/faq">
+                {t.navFaq}
+              </Link>
+            </nav>
+            <div className="flex items-center gap-3">
+              <LanguageSelector />
+              <SignInButton mode="modal">
+                <button className="font-label-md text-sm text-primary border border-outline-variant hover:bg-surface-container-low px-4 py-2 rounded-lg transition-colors font-semibold cursor-pointer">
+                  {t.loginRegister}
+                </button>
+              </SignInButton>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content: Citizen Login Required Gate */}
+        <main className="flex-grow flex items-center justify-center px-4 py-16">
+          <div className="w-full max-w-lg bg-surface-container-lowest border border-outline-variant rounded-2xl p-8 md:p-10 shadow-sm flex flex-col items-center text-center">
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-5">
+              <Bot className="h-8 w-8 text-primary" />
+            </div>
+
+            <span className="font-caption text-xs uppercase tracking-wider font-bold text-secondary-container mb-1">
+              {t.modalCopilotBadge} • {t.govOfIndia}
+            </span>
+            <h2 className="font-headline-lg-mobile md:font-headline-lg text-2xl text-primary font-bold mb-3">
+              {t.navCopilot}
+            </h2>
+            <p className="font-body-md text-sm text-on-surface-variant leading-relaxed mb-6">
+              {t.modalCopilotDesc}
+            </p>
+
+            <SignInButton mode="modal">
+              <button
+                className="w-full bg-primary text-on-primary font-label-md text-sm py-3.5 px-6 rounded-xl font-bold hover:bg-primary-container transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="h-4 w-4 text-secondary" />
+                {t.signIn} &amp; {t.modalCopilotBtn}
+                <ArrowRight className="h-4 w-4 ml-1" />
+              </button>
+            </SignInButton>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
       {/* Top Header */}
@@ -307,38 +405,65 @@ the CPIO is mandated to provide information within 30 days.
         <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-16">
           <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
             <Landmark className="h-6 w-6 text-primary shrink-0" />
-            <span>RTI Online</span>
+            <span>{t.portalTitle}</span>
           </Link>
           <nav className="hidden md:flex gap-6 items-center h-full">
             <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
-              Home
+              {t.navHome}
             </Link>
             <span className="text-primary font-bold border-b-2 border-secondary-container flex items-center h-full px-3 text-[15px] gap-1.5">
-              <Bot className="h-4 w-4 text-primary" /> RTI Copilot
+              <Bot className="h-4 w-4 text-primary" /> {t.navCopilot}
             </span>
-            <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/track">
-              Track Status
-            </Link>
-            <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/history">
-              My History
-            </Link>
+            {isSignedIn ? (
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/track">
+                {t.navTrackStatus}
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  {t.navTrackStatus}
+                </button>
+              </SignInButton>
+            )}
+            {isSignedIn ? (
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/history">
+                {t.navMyHistory}
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  {t.navMyHistory}
+                </button>
+              </SignInButton>
+            )}
           </nav>
           <div className="flex items-center gap-3">
+            <LanguageSelector />
             {isSignedIn ? (
               <UserButton appearance={{ elements: { avatarBox: "h-9 w-9" } }} />
             ) : (
               <SignInButton mode="modal">
                 <button className="hidden md:block font-label-md text-sm text-on-surface-variant hover:text-primary px-3 py-1.5 transition-colors font-semibold cursor-pointer">
-                  Login / Register
+                  {t.loginRegister}
                 </button>
               </SignInButton>
             )}
-            <Link
-              href="/track"
-              className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
-            >
-              Track Status
-            </Link>
+            {isSignedIn ? (
+              <Link
+                href="/track"
+                className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
+              >
+                {t.navTrackStatus}
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button
+                  className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
+                >
+                  {t.navTrackStatus}
+                </button>
+              </SignInButton>
+            )}
           </div>
         </div>
       </header>
@@ -388,10 +513,10 @@ the CPIO is mandated to provide information within 30 days.
               {/* Sample Queries Pill Grid */}
               <div className="flex flex-col gap-2.5">
                 <span className="font-caption text-xs text-on-surface-variant font-bold uppercase tracking-wider">
-                  Or click a sample topic to test:
+                  {t.copilotSampleQueriesTitle}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {SAMPLE_QUERIES.map((sample, idx) => (
+                  {sampleQueries.map((sample, idx) => (
                     <button
                       key={idx}
                       type="button"
@@ -414,7 +539,7 @@ the CPIO is mandated to provide information within 30 days.
                 <div className="flex items-center justify-between">
                   <label className="font-label-md text-xs font-bold text-on-surface flex items-center gap-1.5">
                     <Paperclip className="h-3.5 w-3.5 text-primary" />
-                    Upload Supporting Document (Optional)
+                    {t.copilotDocUploadTitle}
                   </label>
                 </div>
 
@@ -440,7 +565,7 @@ the CPIO is mandated to provide information within 30 days.
                       <span className="font-bold text-primary group-hover:underline">Upload file</span> or drag and drop
                     </div>
                     <p className="text-[11px] text-on-surface-variant">
-                      Official notices, tenders, bills, or grievance letters (PDF, JPG, TXT up to 5MB)
+                      {t.copilotDocUploadDesc}
                     </p>
                     <input
                       type="file"
@@ -463,12 +588,12 @@ the CPIO is mandated to provide information within 30 days.
                   {isGenerating ? (
                     <>
                       <RotateCw className="h-5 w-5 animate-spin" />
-                      Analyzing Intent &amp; Auto-Drafting with Copilot...
+                      {t.copilotGeneratingText}
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5 text-secondary-container" />
-                      Auto-Draft RTI Application with Copilot
+                      <Sparkles className="h-5 w-5 text-secondary" />
+                      {t.copilotGenerateBtn}
                     </>
                   )}
                 </button>

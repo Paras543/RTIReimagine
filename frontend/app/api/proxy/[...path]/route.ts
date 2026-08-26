@@ -36,7 +36,6 @@ async function proxyRequest(
   const { path } = await params;
   const pathStr = path.join("/");
   const isPublicRoute =
-    pathStr.startsWith("applications") ||
     pathStr.startsWith("health") ||
     pathStr.startsWith("manual-filing") ||
     pathStr.startsWith("copilot") ||

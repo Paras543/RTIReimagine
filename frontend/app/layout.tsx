@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 
+import { LanguageProvider } from "@/lib/language-context";
+
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const inter = Inter({
@@ -70,7 +72,9 @@ export default function RootLayout({
           />
         </head>
         <body className={`${inter.className} min-h-full flex flex-col`}>
-          {children}
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
         </body>
       </html>
 

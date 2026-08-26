@@ -16,7 +16,8 @@ import {
   Menu,
 } from "lucide-react";
 import { FileRtiChoiceModal } from "@/components/file-rti-choice-modal";
-
+import { useLanguage } from "@/lib/language-context";
+import { LanguageSelector } from "@/components/language-selector";
 
 interface FaqItem {
   id: string;
@@ -25,77 +26,126 @@ interface FaqItem {
   answer: string;
 }
 
-const FAQ_DATA: FaqItem[] = [
-  {
-    id: "auth-1",
-    category: "General",
-    question: "Which authorities can be approached under RTI?",
-    answer:
-      "You can file an RTI request with any 'Public Authority', which includes all Central Government Ministries, Departments, and allied public sector undertakings. State government departments must be approached via their respective state portals.",
-  },
-  {
-    id: "fees-1",
-    category: "Fees",
-    question: "How is the RTI fee paid online?",
-    answer:
-      "The initial application fee of ₹10 can be paid via Internet Banking of State Bank of India and its associate banks, or using any Credit/Debit Card (Visa/MasterCard/RuPay) or UPI via the integrated SBI payment gateway.",
-  },
-  {
-    id: "filing-1",
-    category: "Filing",
-    question: "What happens if I don't receive a response within 30 days?",
-    answer:
-      "If you do not receive a response within the mandated 30 days, or are unsatisfied with the response, you have the statutory right to file a First Appeal within the RTI Online portal to the designated First Appellate Authority (FAA) of that department.",
-  },
-  {
-    id: "general-2",
-    category: "General",
-    question: "Who can file an RTI application?",
-    answer:
-      "Any citizen of India can file an RTI application to seek information from public authorities under Section 3 of the Right to Information Act, 2005. Non-citizens are not entitled to file RTI applications under the Act.",
-  },
-  {
-    id: "fees-2",
-    category: "Fees",
-    question: "Are BPL (Below Poverty Line) citizens exempt from paying application fees?",
-    answer:
-      "Yes, citizens belonging to the Below Poverty Line (BPL) category are exempt from paying the application fee of ₹10 as well as any additional photocopying or inspection charges. A valid BPL card or certificate must be uploaded during submission.",
-  },
-  {
-    id: "status-1",
-    category: "Status",
-    question: "How can I check the status of my filed RTI application?",
-    answer:
-      "You can check your status at any time by clicking 'Track Status' in the navigation bar and entering your 14-digit Registration Number and registered Email ID/Mobile Number. You will see real-time updates and download official replies.",
-  },
-  {
-    id: "appeals-1",
-    category: "Appeals",
-    question: "What is the time limit for filing a First Appeal?",
-    answer:
-      "A First Appeal must be filed within 30 days from the expiry of the prescribed response period (30 days from filing) or within 30 days from the date on which the decision of the Public Information Officer (CPIO) was received.",
-  },
-  {
-    id: "filing-2",
-    category: "Filing",
-    question: "Can I file RTI for multiple questions or issues in a single request?",
-    answer:
-      "Yes, you can ask multiple specific and clear questions regarding a single subject matter in one application. However, as per Department of Personnel & Training guidelines, an RTI application should ideally not exceed 500 words and should be confined to a single subject.",
-  },
-];
+const FAQ_DATA_BY_LANG: Record<"en" | "hi", FaqItem[]> = {
+  en: [
+    {
+      id: "auth-1",
+      category: "General",
+      question: "Which authorities can be approached under RTI?",
+      answer:
+        "You can file an RTI request with any 'Public Authority', which includes all Central Government Ministries, Departments, and allied public sector undertakings. State government departments must be approached via their respective state portals.",
+    },
+    {
+      id: "fees-1",
+      category: "Fees",
+      question: "How is the RTI fee paid online?",
+      answer:
+        "The initial application fee of ₹10 can be paid via Internet Banking of State Bank of India, UPI, or using any Credit/Debit Card (Visa/MasterCard/RuPay) via the integrated payment gateway.",
+    },
+    {
+      id: "filing-1",
+      category: "Filing",
+      question: "What happens if I don't receive a response within 30 days?",
+      answer:
+        "If you do not receive a response within the mandated 30 days, or are unsatisfied with the response, you have the statutory right to file a First Appeal within the RTI Online portal to the designated First Appellate Authority (FAA).",
+    },
+    {
+      id: "general-2",
+      category: "General",
+      question: "Who can file an RTI application?",
+      answer:
+        "Any citizen of India can file an RTI application to seek information from public authorities under Section 3 of the Right to Information Act, 2005.",
+    },
+    {
+      id: "fees-2",
+      category: "Fees",
+      question: "Are BPL (Below Poverty Line) citizens exempt from paying application fees?",
+      answer:
+        "Yes, citizens belonging to the Below Poverty Line (BPL) category are exempt from paying the application fee of ₹10. A valid BPL card or certificate must be provided during submission.",
+    },
+    {
+      id: "status-1",
+      category: "Status",
+      question: "How can I check the status of my filed RTI application?",
+      answer:
+        "You can check your status at any time by clicking 'Track Status' in the navigation bar and entering your Application ID. You will see real-time updates and download official replies.",
+    },
+    {
+      id: "appeals-1",
+      category: "Appeals",
+      question: "What is the time limit for filing a First Appeal?",
+      answer:
+        "A First Appeal must be filed within 30 days from the expiry of the prescribed response period (30 days from filing) or within 30 days from the date of the decision of the Public Information Officer (CPIO).",
+    },
+  ],
+  hi: [
+    {
+      id: "auth-1",
+      category: "General",
+      question: "आरटीआई के तहत किन प्राधिकरणों से सूचना मांगी जा सकती है?",
+      answer:
+        "आप किसी भी 'लोक प्राधिकरण' के पास आरटीआई आवेदन दर्ज कर सकते हैं, जिसमें सभी केंद्रीय मंत्रालय, विभाग और संबंधित सार्वजनिक उपक्रम शामिल हैं। राज्य सरकार के विभागों के लिए संबंधित राज्य पोर्टल से संपर्क करें।",
+    },
+    {
+      id: "fees-1",
+      category: "Fees",
+      question: "आरटीआई शुल्क का ऑनलाइन भुगतान कैसे किया जाता है?",
+      answer:
+        "₹10 का प्रारंभिक आवेदन शुल्क नेट बैंकिंग, यूपीआई (UPI) या किसी भी क्रेडिट/डेबिट कार्ड (Visa/MasterCard/RuPay) के माध्यम से सुरक्षित रूप से ऑनलाइन चुकाया जा सकता है।",
+    },
+    {
+      id: "filing-1",
+      category: "Filing",
+      question: "यदि मुझे 30 दिनों के भीतर कोई उत्तर न मिले तो क्या होगा?",
+      answer:
+        "यदि निर्धारित 30 दिनों में उत्तर नहीं मिलता है या उत्तर असंतोषजनक है, तो आपको संबंधित विभाग के प्रथम अपीलीय प्राधिकारी (FAA) के पास ऑनलाइन प्रथम अपील दाखिल करने का कानूनी अधिकार है।",
+    },
+    {
+      id: "general-2",
+      category: "General",
+      question: "आरटीआई आवेदन कौन दर्ज कर सकता है?",
+      answer:
+        "सूचना का अधिकार अधिनियम, 2005 की धारा 3 के तहत भारत का कोई भी नागरिक लोक प्राधिकरणों से सूचना प्राप्त करने के लिए आरटीआई आवेदन दर्ज कर सकता है।",
+    },
+    {
+      id: "fees-2",
+      category: "Fees",
+      question: "क्या बीपीएल (गरीबी रेखा से नीचे) नागरिकों को शुल्क से छूट प्राप्त है?",
+      answer:
+        "हाँ, गरीबी रेखा से नीचे (BPL) श्रेणी के नागरिकों को ₹10 के आवेदन शुल्क से पूरी तरह छूट दी गई है। आवेदन के समय वैध बीपीएल कार्ड या राशन कार्ड नंबर दर्ज करना आवश्यक है।",
+    },
+    {
+      id: "status-1",
+      category: "Status",
+      question: "मैं अपने आरटीआई आवेदन की स्थिति कैसे जांच सकता हूँ?",
+      answer:
+        "आप नेविगेशन बार में 'स्थिति ट्रैक करें' पर क्लिक करके और अपनी आवेदन संख्या दर्ज करके कभी भी वास्तविक समय में आवेदन की प्रगति देख सकते हैं।",
+    },
+    {
+      id: "appeals-1",
+      category: "Appeals",
+      question: "प्रथम अपील दाखिल करने की समय-सीमा क्या है?",
+      answer:
+        "प्रथम अपील 30 दिनों की वैधानिक अवधि समाप्त होने के 30 दिनों के भीतर, या सीपीआईओ (CPIO) के निर्णय प्राप्त होने की तिथि से 30 दिनों के भीतर दाखिल की जानी चाहिए।",
+    },
+  ],
+};
 
 const CATEGORIES = ["All", "General", "Filing", "Fees", "Status", "Appeals"] as const;
 
 export default function FaqPage() {
   const router = useRouter();
   const { isSignedIn } = useAuth();
+  const { language, t } = useLanguage();
   const [isChoiceModalOpen, setIsChoiceModalOpen] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [openAccordionId, setOpenAccordionId] = useState<string | null>("auth-1");
 
-  const filteredFaqs = FAQ_DATA.filter((item) => {
+  const faqData = FAQ_DATA_BY_LANG[language] || FAQ_DATA_BY_LANG.en;
+
+  const filteredFaqs = faqData.filter((item) => {
     const matchesCategory =
       selectedCategory === "All" || item.category === selectedCategory;
     const matchesSearch =
@@ -132,32 +182,68 @@ export default function FaqPage() {
                 className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
                 href="/"
               >
-                Home
+                {t.navHome}
               </Link>
+
+              {/* RTI Copilot */}
+              {isSignedIn ? (
+                <Link
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
+                  href="/copilot"
+                >
+                  {t.navCopilot}
+                </Link>
+              ) : (
+                <SignInButton mode="modal">
+                  <button className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                    {t.navCopilot}
+                  </button>
+                </SignInButton>
+              )}
 
               {/* File RTI */}
               <button
                 onClick={() => setIsChoiceModalOpen(true)}
                 className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 cursor-pointer font-medium text-[15px]"
               >
-                File RTI
+                {t.navFileRti}
               </button>
 
               {/* Track Status */}
-              <Link
-                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/track"
-              >
-                Track Status
-              </Link>
+              {isSignedIn ? (
+                <Link
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
+                  href="/track"
+                >
+                  {t.navTrackStatus}
+                </Link>
+              ) : (
+                <SignInButton mode="modal">
+                  <button
+                    className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px] cursor-pointer"
+                  >
+                    {t.navTrackStatus}
+                  </button>
+                </SignInButton>
+              )}
 
               {/* My History */}
-              <Link
-                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/history"
-              >
-                My History
-              </Link>
+              {isSignedIn ? (
+                <Link
+                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
+                  href="/history"
+                >
+                  {t.navMyHistory}
+                </Link>
+              ) : (
+                <SignInButton mode="modal">
+                  <button
+                    className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px] cursor-pointer"
+                  >
+                    {t.navMyHistory}
+                  </button>
+                </SignInButton>
+              )}
 
 
               {/* FAQ - Active */}
@@ -165,13 +251,14 @@ export default function FaqPage() {
                 className="text-primary font-bold border-b-2 border-secondary-container pb-1 h-full flex items-center hover:bg-surface-container-low transition-colors px-3 text-[15px]"
                 href="/faq"
               >
-                FAQ
+                {t.navFaq}
               </Link>
             </div>
           </div>
 
           {/* Trailing Actions */}
           <div className="flex items-center gap-3 h-full shrink-0">
+            <LanguageSelector />
             {isSignedIn ? (
               <UserButton
                 appearance={{
@@ -183,7 +270,7 @@ export default function FaqPage() {
             ) : (
               <SignInButton mode="modal">
                 <button className="hidden md:block bg-surface text-primary border border-outline-variant px-4 py-2 rounded-lg hover:bg-surface-container-low transition-colors font-semibold text-sm">
-                  Login / Register
+                  {t.loginRegister}
                 </button>
               </SignInButton>
             )}
@@ -191,7 +278,7 @@ export default function FaqPage() {
               onClick={() => setIsChoiceModalOpen(true)}
               className="bg-secondary-container text-on-secondary-container px-5 py-2.5 rounded-lg font-bold hover:brightness-110 transition-all cursor-pointer shadow-xs text-sm"
             >
-              File New Request
+              {t.heroCtaFileNow}
             </button>
           </div>
         </div>

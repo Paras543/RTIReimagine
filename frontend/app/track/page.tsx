@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
 import { FileRtiChoiceModal } from "@/components/file-rti-choice-modal";
+import { Button } from "@/components/ui/button";
 import {
   Landmark,
   Search,
@@ -20,6 +21,8 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { useLanguage } from "@/lib/language-context";
+import { LanguageSelector } from "@/components/language-selector";
 
 
 interface TimelineEvent {
@@ -132,7 +135,8 @@ const SAMPLE_HISTORY: HistoryItem[] = [
 function TrackAndHistoryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { t } = useLanguage();
 
   const initialScreen = searchParams.get("screen") === "screen2" ? "screen2" : "screen1";
   const [activeScreen, setActiveScreen] = useState<"screen1" | "screen2">(initialScreen);
@@ -162,13 +166,15 @@ function TrackAndHistoryContent() {
 
   // Sync initial query param ID or load default
   useEffect(() => {
+    if (!isSignedIn) return;
     const idFromParam = searchParams.get("id") || "RTI/2026/XXXXXXX";
     setCurrentAppId(idFromParam);
     fetchApplicationStatus(idFromParam);
-  }, [searchParams]);
+  }, [isSignedIn, searchParams]);
 
   // Dynamic live fetch for History list from backend
   useEffect(() => {
+    if (!isSignedIn) return;
     const fetchHistoryFromBackend = async () => {
       try {
         const queryParams = new URLSearchParams();
@@ -188,7 +194,7 @@ function TrackAndHistoryContent() {
     };
 
     fetchHistoryFromBackend();
-  }, [historyFilter, historySearch]);
+  }, [isSignedIn, historyFilter, historySearch]);
 
   const fetchApplicationStatus = async (appId: string) => {
     setIsLoadingStatus(true);
@@ -213,7 +219,6 @@ function TrackAndHistoryContent() {
       setIsLoadingStatus(false);
     }
   };
-
 
   const handleSearchStatus = (e: React.FormEvent) => {
     e.preventDefault();
@@ -281,6 +286,148 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
     return matchesFilter && matchesSearch;
   });
 
+  // 1. Session Loading State
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-3">
+        <RotateCw className="h-8 w-8 text-primary animate-spin" />
+        <span className="text-on-surface-variant font-medium text-sm">Verifying citizen session...</span>
+      </div>
+    );
+  }
+
+  // 2. Unauthenticated State: Citizen Sign-In Required Gate (Hides status & history)
+  if (!isSignedIn) {
+    return (
+      <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+        {/* TopNavBar for Logged-Out Citizens */}
+        <header className="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40 shadow-xs">
+          <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-[64px]">
+            <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
+              <Landmark className="h-6 w-6 text-primary shrink-0" />
+              <span>RTI Online</span>
+            </Link>
+            <nav className="hidden md:flex gap-6 items-center h-full">
+              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
+                Home
+              </Link>
+              <SignInButton mode="modal">
+                <button
+                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
+                >
+                  {t.navCopilot}
+                </button>
+              </SignInButton>
+              <button
+                onClick={() => setIsChoiceModalOpen(true)}
+                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
+              >
+                File RTI
+              </button>
+              <SignInButton mode="modal">
+                <button
+                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
+                >
+                  Track Status
+                </button>
+              </SignInButton>
+              <SignInButton mode="modal">
+                <button
+                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
+                >
+                  My History
+                </button>
+              </SignInButton>
+              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/faq">
+                FAQ
+              </Link>
+            </nav>
+            <div className="flex items-center gap-3">
+              <LanguageSelector />
+              <SignInButton mode="modal">
+                <button className="font-label-md text-sm text-primary border border-outline-variant hover:bg-surface-container-low px-4 py-2 rounded-lg transition-colors font-semibold cursor-pointer">
+                  Login / Register
+                </button>
+              </SignInButton>
+              <button
+                onClick={() => setIsChoiceModalOpen(true)}
+                className="bg-secondary-container text-on-secondary-container font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:brightness-105 transition-all shadow-xs cursor-pointer"
+              >
+                File New Request
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content: Official Citizen Login Required Gate */}
+        <main className="flex-grow flex items-center justify-center px-4 py-16">
+          <div className="w-full max-w-lg bg-surface-container-lowest border border-outline-variant rounded-2xl p-8 md:p-10 shadow-sm flex flex-col items-center text-center">
+            <div className="h-16 w-16 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed mb-5">
+              <ShieldCheck className="h-8 w-8 text-primary" />
+            </div>
+
+            <span className="font-caption text-xs uppercase tracking-wider font-bold text-on-surface-variant mb-1">
+              Official RTI Citizen Portal
+            </span>
+
+            <h1 className="font-headline-md text-2xl md:text-3xl font-bold text-primary mb-3">
+              Citizen Login Required
+            </h1>
+
+            <p className="font-body-md text-sm md:text-base text-on-surface-variant leading-relaxed mb-8">
+              To track the real-time status of your submitted RTI requests or view your complete RTI filing history, please sign in to your official citizen account.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full">
+              <SignInButton mode="modal">
+                <Button className="flex-1 bg-primary text-on-primary font-semibold py-3 h-11 rounded-lg hover:bg-primary-container transition-colors cursor-pointer flex items-center justify-center gap-2">
+                  Sign In / Register <ArrowRight className="h-4 w-4" />
+                </Button>
+              </SignInButton>
+
+              <Link href="/" className="flex-1">
+                <Button variant="outline" className="w-full border-outline-variant text-on-surface font-semibold py-3 h-11 rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
+                  Return to Home
+                </Button>
+              </Link>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-outline-variant/60 w-full text-xs text-on-surface-variant">
+              Department of Personnel &amp; Training • Government of India
+            </div>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-primary text-on-primary font-caption text-xs full-width bottom-0 mt-auto border-t border-primary-container">
+          <div className="w-full py-5 px-4 md:px-8 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto gap-4">
+            <div className="font-label-md text-xs font-bold text-on-primary">
+              © 2024 RTI Online. Designed and Developed by National Informatics Centre (NIC).
+            </div>
+            <div className="flex flex-wrap gap-5 justify-center">
+              <Link className="text-on-primary opacity-80 hover:opacity-100 hover:text-secondary-fixed cursor-pointer transition-opacity" href="/faq">
+                Help Desk
+              </Link>
+            </div>
+          </div>
+        </footer>
+
+        <FileRtiChoiceModal
+          isOpen={isChoiceModalOpen}
+          onClose={() => setIsChoiceModalOpen(false)}
+          onSelectCopilot={() => {
+            setIsChoiceModalOpen(false);
+            router.push("/copilot");
+          }}
+          onSelectManual={() => {
+            setIsChoiceModalOpen(false);
+            router.push("/file-rti");
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col">
 
@@ -299,6 +446,12 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
             <nav className="hidden md:flex gap-6 items-center h-full">
               <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
                 Home
+              </Link>
+              <Link
+                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]"
+                href="/copilot"
+              >
+                {t.navCopilot}
               </Link>
               <button
                 onClick={() => setIsChoiceModalOpen(true)}
@@ -324,6 +477,7 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               </Link>
             </nav>
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               {isSignedIn ? (
                 <UserButton
                   appearance={{
@@ -616,6 +770,12 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
                 Home
               </Link>
+              <Link
+                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]"
+                href="/copilot"
+              >
+                {t.navCopilot}
+              </Link>
               <button
                 onClick={() => setIsChoiceModalOpen(true)}
                 className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
@@ -640,6 +800,7 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               </Link>
             </nav>
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               {isSignedIn ? (
                 <UserButton
                   appearance={{
