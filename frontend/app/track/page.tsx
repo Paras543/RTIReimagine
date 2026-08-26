@@ -21,6 +21,8 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { useLanguage } from "@/lib/language-context";
+import { LanguageSelector } from "@/components/language-selector";
 
 
 interface TimelineEvent {
@@ -134,6 +136,7 @@ function TrackAndHistoryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { isLoaded, isSignedIn } = useAuth();
+  const { t } = useLanguage();
 
   const initialScreen = searchParams.get("screen") === "screen2" ? "screen2" : "screen1";
   const [activeScreen, setActiveScreen] = useState<"screen1" | "screen2">(initialScreen);
@@ -308,6 +311,13 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
                 Home
               </Link>
+              <SignInButton mode="modal">
+                <button
+                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
+                >
+                  {t.navCopilot}
+                </button>
+              </SignInButton>
               <button
                 onClick={() => setIsChoiceModalOpen(true)}
                 className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
@@ -333,6 +343,7 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               </Link>
             </nav>
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               <SignInButton mode="modal">
                 <button className="font-label-md text-sm text-primary border border-outline-variant hover:bg-surface-container-low px-4 py-2 rounded-lg transition-colors font-semibold cursor-pointer">
                   Login / Register
@@ -436,6 +447,12 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
                 Home
               </Link>
+              <Link
+                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]"
+                href="/copilot"
+              >
+                {t.navCopilot}
+              </Link>
               <button
                 onClick={() => setIsChoiceModalOpen(true)}
                 className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
@@ -460,6 +477,7 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               </Link>
             </nav>
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               {isSignedIn ? (
                 <UserButton
                   appearance={{
@@ -752,6 +770,12 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
                 Home
               </Link>
+              <Link
+                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]"
+                href="/copilot"
+              >
+                {t.navCopilot}
+              </Link>
               <button
                 onClick={() => setIsChoiceModalOpen(true)}
                 className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
@@ -776,6 +800,7 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
               </Link>
             </nav>
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               {isSignedIn ? (
                 <UserButton
                   appearance={{

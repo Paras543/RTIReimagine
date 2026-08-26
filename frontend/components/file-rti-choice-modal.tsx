@@ -5,6 +5,8 @@ import { X, Bot, Sparkles, FileEdit, CheckCircle2, ArrowRight } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
+import { useLanguage } from "@/lib/language-context";
+
 interface FileRtiChoiceModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,6 +21,7 @@ export function FileRtiChoiceModal({
   onSelectManual,
 }: FileRtiChoiceModalProps) {
   const { isSignedIn } = useAuth();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -65,12 +68,11 @@ export function FileRtiChoiceModal({
           {/* Header Section */}
           <div className="text-center w-full max-w-[620px] mx-auto mb-8 sm:mb-9">
             <h2 className="text-[28px] sm:text-[36px] md:text-[40px] text-[#001f3f] font-extrabold tracking-tight leading-[1.15]">
-              Right to Information<br />
-              made accessible.
+              {t.modalTitle1}<br />
+              {t.modalTitle2}
             </h2>
             <p className="text-[14px] sm:text-[15.5px] text-slate-600 font-normal mt-3 leading-relaxed">
-              Empowering citizens to seek information from the Government of India.
-              <br className="hidden sm:inline" /> Choose how you want to file your request today.
+              {t.modalSubtitle}
             </p>
           </div>
 
@@ -85,15 +87,15 @@ export function FileRtiChoiceModal({
                   </div>
                   <span className="inline-flex items-center gap-1.5 bg-[#fff3ea] text-[#c2410c] border border-[#ffddc2] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                     <Sparkles className="h-3 w-3 text-[#ea580c]" />
-                    AI-ASSISTED
+                    {t.modalCopilotBadge}
                   </span>
                 </div>
 
                 <h3 className="text-[21px] sm:text-[22px] font-bold text-[#001f3f] mb-2.5">
-                  RTI Copilot
+                  {t.modalCopilotTitle}
                 </h3>
                 <p className="text-[14px] text-slate-600 font-normal leading-[1.6]">
-                  Not sure how to write your RTI? Let the Copilot help you prepare it. We will guide you through the process, ensure legal framing, and draft the request for you.
+                  {t.modalCopilotDesc}
                 </p>
               </div>
 
@@ -104,7 +106,7 @@ export function FileRtiChoiceModal({
                     onClick={onSelectCopilot}
                     className="w-full bg-[#001f3f] hover:bg-[#12355b] text-white font-semibold text-[14.5px] py-3.5 h-auto rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
                   >
-                    Start with RTI Copilot <ArrowRight className="h-4 w-4" />
+                    {t.modalCopilotBtn} <ArrowRight className="h-4 w-4" />
                   </Button>
                 ) : (
                   <SignInButton mode="modal">
@@ -112,7 +114,7 @@ export function FileRtiChoiceModal({
                       id="modal-copilot-start-btn"
                       className="w-full bg-[#001f3f] hover:bg-[#12355b] text-white font-semibold text-[14.5px] py-3.5 h-auto rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
                     >
-                      Start with RTI Copilot <ArrowRight className="h-4 w-4" />
+                      {t.modalCopilotBtn} <ArrowRight className="h-4 w-4" />
                     </Button>
                   </SignInButton>
                 )}
@@ -129,20 +131,20 @@ export function FileRtiChoiceModal({
                 </div>
 
                 <h3 className="text-[21px] sm:text-[22px] font-bold text-[#001f3f] mb-2.5">
-                  File manually
+                  {t.modalManualTitle}
                 </h3>
                 <p className="text-[14px] text-slate-600 font-normal leading-[1.6] mb-5">
-                  Submit your RTI request directly if you already know the appropriate public authority and have your query drafted.
+                  {t.modalManualDesc}
                 </p>
 
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center gap-2 text-slate-700 text-[13.5px] font-medium">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Standard submission form</span>
+                    <span>{t.modalManualFeature1}</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700 text-[13.5px] font-medium">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                    <span>Direct payment gateway</span>
+                    <span>{t.modalManualFeature2}</span>
                   </div>
                 </div>
               </div>
@@ -155,7 +157,7 @@ export function FileRtiChoiceModal({
                     variant="outline"
                     className="w-full bg-white border border-slate-300 hover:bg-slate-50 text-[#001f3f] font-semibold text-[14.5px] py-3.5 h-auto rounded-xl flex items-center justify-center transition-all cursor-pointer"
                   >
-                    Submit Request
+                    {t.modalManualBtn}
                   </Button>
                 ) : (
                   <SignInButton mode="modal">
@@ -164,7 +166,7 @@ export function FileRtiChoiceModal({
                       variant="outline"
                       className="w-full bg-white border border-slate-300 hover:bg-slate-50 text-[#001f3f] font-semibold text-[14.5px] py-3.5 h-auto rounded-xl flex items-center justify-center transition-all cursor-pointer"
                     >
-                      Submit Request
+                      {t.modalManualBtn}
                     </Button>
                   </SignInButton>
                 )}

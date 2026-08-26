@@ -21,6 +21,8 @@ import {
   Check,
   Info,
 } from "lucide-react";
+import { useLanguage } from "@/lib/language-context";
+import { LanguageSelector } from "@/components/language-selector";
 
 const APPEAL_GROUNDS = [
   {
@@ -233,6 +235,8 @@ ${appealBody}
     URL.revokeObjectURL(url);
   };
 
+  const { t } = useLanguage();
+
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
       {/* Top Header */}
@@ -240,48 +244,60 @@ ${appealBody}
         <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-16">
           <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
             <Landmark className="h-6 w-6 text-primary shrink-0" />
-            <span>RTI Online</span>
+            <span>{t.portalTitle}</span>
           </Link>
           <nav className="hidden md:flex gap-6 items-center h-full">
             <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
-              Home
+              {t.navHome}
             </Link>
             <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/file-rti">
-              File RTI
+              {t.navFileRti}
             </Link>
             {isSignedIn ? (
-              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/track">
-                Track Status
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/copilot">
+                {t.navCopilot}
               </Link>
             ) : (
               <SignInButton mode="modal">
                 <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
-                  Track Status
+                  {t.navCopilot}
+                </button>
+              </SignInButton>
+            )}
+            {isSignedIn ? (
+              <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/track">
+                {t.navTrackStatus}
+              </Link>
+            ) : (
+              <SignInButton mode="modal">
+                <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
+                  {t.navTrackStatus}
                 </button>
               </SignInButton>
             )}
             <span className="text-primary font-bold border-b-2 border-secondary-container flex items-center h-full px-3 text-[15px] gap-1.5">
-              <Gavel className="h-4 w-4 text-primary" /> First Appeal
+              <Gavel className="h-4 w-4 text-primary" /> {t.navFirstAppeal}
             </span>
             {isSignedIn ? (
               <Link className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/history">
-                My History
+                {t.navMyHistory}
               </Link>
             ) : (
               <SignInButton mode="modal">
                 <button className="text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
-                  My History
+                  {t.navMyHistory}
                 </button>
               </SignInButton>
             )}
           </nav>
           <div className="flex items-center gap-3">
+            <LanguageSelector />
             {isSignedIn ? (
               <UserButton appearance={{ elements: { avatarBox: "h-9 w-9" } }} />
             ) : (
               <SignInButton mode="modal">
                 <button className="hidden md:block font-label-md text-sm text-on-surface-variant hover:text-primary px-3 py-1.5 transition-colors font-semibold cursor-pointer">
-                  Login / Register
+                  {t.loginRegister}
                 </button>
               </SignInButton>
             )}
@@ -290,14 +306,14 @@ ${appealBody}
                 href="/track"
                 className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
               >
-                Track Status
+                {t.navTrackStatus}
               </Link>
             ) : (
               <SignInButton mode="modal">
                 <button
                   className="bg-surface-container border border-outline-variant text-primary font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:bg-surface-container-high transition-all cursor-pointer"
                 >
-                  Track Status
+                  {t.navTrackStatus}
                 </button>
               </SignInButton>
             )}

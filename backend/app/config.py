@@ -14,9 +14,11 @@ class Settings:
     llm_api_key: str = os.getenv("LLM_API_KEY", "")
     llm_base_url: str = os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1")
     llm_model: str = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
-    cors_origins: list[str] = os.getenv(
-        "CORS_ORIGINS", "http://localhost:3000"
-    ).split(",")
+    cors_origins_raw: str = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,*")
+    cors_origins: list[str] = [orig.strip() for orig in cors_origins_raw.split(",") if orig.strip()]
+
+    # Server port
+    port: int = int(os.getenv("PORT", "8000"))
 
     # Clerk authentication
     clerk_secret_key: str = os.getenv("CLERK_SECRET_KEY", "")
