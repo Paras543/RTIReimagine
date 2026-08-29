@@ -21,6 +21,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
 import { useLanguage } from "@/lib/language-context";
 import { LanguageSelector } from "@/components/language-selector";
 
@@ -301,63 +302,10 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
     return (
       <div className="bg-background text-on-background font-body-md min-h-screen flex flex-col">
         {/* TopNavBar for Logged-Out Citizens */}
-        <header className="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40 shadow-xs">
-          <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-[64px]">
-            <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
-              <Landmark className="h-6 w-6 text-primary shrink-0" />
-              <span>RTI Online</span>
-            </Link>
-            <nav className="hidden md:flex gap-6 items-center h-full">
-              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
-                Home
-              </Link>
-              <SignInButton mode="modal">
-                <button
-                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-                >
-                  {t.navCopilot}
-                </button>
-              </SignInButton>
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-              >
-                File RTI
-              </button>
-              <SignInButton mode="modal">
-                <button
-                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-                >
-                  Track Status
-                </button>
-              </SignInButton>
-              <SignInButton mode="modal">
-                <button
-                  className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-                >
-                  My History
-                </button>
-              </SignInButton>
-              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/faq">
-                FAQ
-              </Link>
-            </nav>
-            <div className="flex items-center gap-3">
-              <LanguageSelector />
-              <SignInButton mode="modal">
-                <button className="font-label-md text-sm text-primary border border-outline-variant hover:bg-surface-container-low px-4 py-2 rounded-lg transition-colors font-semibold cursor-pointer">
-                  Login / Register
-                </button>
-              </SignInButton>
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="bg-secondary-container text-on-secondary-container font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:brightness-105 transition-all shadow-xs cursor-pointer"
-              >
-                File New Request
-              </button>
-            </div>
-          </div>
-        </header>
+        <SiteHeader
+          activeTab="track"
+          onOpenFileChoiceModal={() => setIsChoiceModalOpen(true)}
+        />
 
         {/* Main Content: Official Citizen Login Required Gate */}
         <main className="flex-grow flex items-center justify-center px-4 py-16">
@@ -437,71 +385,10 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
       {/* ========================================== */}
       <div className={`app-screen flex-grow flex flex-col ${activeScreen === "screen1" ? "active block" : "hidden"}`} id="screen1">
         {/* TopNavBar */}
-        <header className="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40 shadow-xs">
-          <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-[64px]">
-            <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
-              <Landmark className="h-6 w-6 text-primary shrink-0" />
-              <span>RTI Online</span>
-            </Link>
-            <nav className="hidden md:flex gap-6 items-center h-full">
-              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
-                Home
-              </Link>
-              <Link
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]"
-                href="/copilot"
-              >
-                {t.navCopilot}
-              </Link>
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-              >
-                File RTI
-              </button>
-              {/* Active Logic Applied */}
-              <button
-                onClick={() => switchScreen("screen1")}
-                className="font-body-md text-primary font-bold border-b-2 border-secondary-container flex items-center h-full px-3 text-[15px] opacity-90 cursor-pointer"
-              >
-                Track Status
-              </button>
-              <button
-                onClick={() => switchScreen("screen2")}
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-              >
-                My History
-              </button>
-              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/faq">
-                FAQ
-              </Link>
-            </nav>
-            <div className="flex items-center gap-3">
-              <LanguageSelector />
-              {isSignedIn ? (
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "h-9 w-9",
-                    },
-                  }}
-                />
-              ) : (
-                <SignInButton mode="modal">
-                  <button className="hidden md:block font-label-md text-sm text-on-surface-variant hover:text-primary px-3 py-1.5 transition-colors font-semibold cursor-pointer">
-                    Login / Register
-                  </button>
-                </SignInButton>
-              )}
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="bg-secondary-container text-on-secondary-container font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:brightness-105 transition-all shadow-xs cursor-pointer"
-              >
-                File New Request
-              </button>
-            </div>
-          </div>
-        </header>
+        <SiteHeader
+          activeTab="track"
+          onOpenFileChoiceModal={() => setIsChoiceModalOpen(true)}
+        />
 
         {/* Main Content */}
         <main className="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -760,71 +647,10 @@ Statutory Mandate: RTI Act, 2005 (Section 7(1))
       {/* ========================================== */}
       <div className={`app-screen flex-grow flex flex-col ${activeScreen === "screen2" ? "active block" : "hidden"}`} id="screen2">
         {/* TopNavBar */}
-        <header className="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-40 shadow-xs">
-          <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-[64px]">
-            <Link href="/" className="font-headline-md text-xl font-bold text-primary flex items-center gap-2.5">
-              <Landmark className="h-6 w-6 text-primary shrink-0" />
-              <span>RTI Online</span>
-            </Link>
-            <nav className="hidden md:flex gap-6 items-center h-full">
-              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/">
-                Home
-              </Link>
-              <Link
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]"
-                href="/copilot"
-              >
-                {t.navCopilot}
-              </Link>
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-              >
-                File RTI
-              </button>
-              <button
-                onClick={() => switchScreen("screen1")}
-                className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 cursor-pointer font-medium text-[15px]"
-              >
-                Track Status
-              </button>
-              {/* Active Logic Applied for Screen 2 */}
-              <button
-                onClick={() => switchScreen("screen2")}
-                className="font-body-md text-primary font-bold border-b-2 border-secondary-container flex items-center h-full px-3 text-[15px] opacity-90 cursor-pointer"
-              >
-                My History
-              </button>
-              <Link className="font-body-md text-on-surface-variant hover:text-primary transition-colors flex items-center h-full hover:bg-surface-container-low px-3 font-medium text-[15px]" href="/faq">
-                FAQ
-              </Link>
-            </nav>
-            <div className="flex items-center gap-3">
-              <LanguageSelector />
-              {isSignedIn ? (
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "h-9 w-9",
-                    },
-                  }}
-                />
-              ) : (
-                <SignInButton mode="modal">
-                  <button className="hidden md:block font-label-md text-sm text-on-surface-variant hover:text-primary px-3 py-1.5 transition-colors font-semibold cursor-pointer">
-                    Login / Register
-                  </button>
-                </SignInButton>
-              )}
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="bg-secondary-container text-on-secondary-container font-label-md text-sm px-4 py-2 rounded-lg font-bold hover:brightness-105 transition-all shadow-xs cursor-pointer"
-              >
-                File New Request
-              </button>
-            </div>
-          </div>
-        </header>
+        <SiteHeader
+          activeTab="history"
+          onOpenFileChoiceModal={() => setIsChoiceModalOpen(true)}
+        />
 
         <main className="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">

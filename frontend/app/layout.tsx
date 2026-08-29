@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import { LanguageProvider } from "@/lib/language-context";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const inter = Inter({
   subsets: ["latin"],
@@ -14,7 +14,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "RTI Online - Government of India",
-  description: "File RTI applications and first appeals with Central Government public authorities securely.",
+  description:
+    "File RTI applications and first appeals with Central Government public authorities securely. Viksit Bharat 2047.",
+  icons: {
+    icon: [
+      { url: "/viksit-india.png", sizes: "any" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/viksit-india.png",
+    apple: "/viksit-india.png",
+  },
 };
 
 export default function RootLayout({
@@ -66,6 +75,9 @@ export default function RootLayout({
     >
       <html lang="en" className={cn("light h-full antialiased", "font-sans", geist.variable)}>
         <head>
+          <link rel="icon" href="/viksit-india.png" type="image/png" />
+          <link rel="shortcut icon" href="/viksit-india.png" type="image/png" />
+          <link rel="apple-touch-icon" href="/viksit-india.png" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
@@ -77,7 +89,6 @@ export default function RootLayout({
           </LanguageProvider>
         </body>
       </html>
-
     </ClerkProvider>
   );
 }

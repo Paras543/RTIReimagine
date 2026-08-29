@@ -16,6 +16,7 @@ import {
   Menu,
 } from "lucide-react";
 import { FileRtiChoiceModal } from "@/components/file-rti-choice-modal";
+import { SiteHeader } from "@/components/site-header";
 import { useLanguage } from "@/lib/language-context";
 import { LanguageSelector } from "@/components/language-selector";
 
@@ -162,127 +163,10 @@ export default function FaqPage() {
   return (
     <div className="bg-background text-on-background min-h-screen flex flex-col">
       {/* TopNavBar */}
-      <nav className="bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-30 shadow-xs">
-        <div className="flex justify-between items-center px-4 md:px-8 w-full max-w-7xl mx-auto h-16 overflow-x-auto no-scrollbar">
-          {/* Brand + Navigation Links */}
-          <div className="flex items-center gap-8 h-full min-w-max">
-            <Link href="/" className="flex items-center gap-3">
-              <img
-                className="h-10 w-auto object-contain"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKNgfcj8pGfbImVV9qFRR7dMonANec5PBYViLmUSvnISJaOa80b8OGK-gSkAKIFUnepxJx3wZvwL9YLS8TgOhIrTsu85fmikN_ITgaLprlLfyMYA8cEyu9S4U_Swo7UqGznE3DroPRfTPKtMgRoNXBK8CXKQAFqGBhVddbYnGDhXHdV134e_-2LuIhA886-SaFZH931WR1KHMEvy0VtXOuRxnuysHSANc-uS3-YEflsXOVhkVGMPHn"
-                alt="Emblem of India"
-              />
-              <span className="font-headline-md text-xl font-bold text-primary tracking-tight">
-                RTI Online
-              </span>
-            </Link>
-
-            <div className="hidden md:flex items-center gap-6 h-full">
-              <Link
-                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                href="/"
-              >
-                {t.navHome}
-              </Link>
-
-              {/* RTI Copilot */}
-              {isSignedIn ? (
-                <Link
-                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                  href="/copilot"
-                >
-                  {t.navCopilot}
-                </Link>
-              ) : (
-                <SignInButton mode="modal">
-                  <button className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low px-3 font-medium text-[15px] cursor-pointer">
-                    {t.navCopilot}
-                  </button>
-                </SignInButton>
-              )}
-
-              {/* File RTI */}
-              <button
-                onClick={() => setIsChoiceModalOpen(true)}
-                className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 cursor-pointer font-medium text-[15px]"
-              >
-                {t.navFileRti}
-              </button>
-
-              {/* Track Status */}
-              {isSignedIn ? (
-                <Link
-                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                  href="/track"
-                >
-                  {t.navTrackStatus}
-                </Link>
-              ) : (
-                <SignInButton mode="modal">
-                  <button
-                    className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px] cursor-pointer"
-                  >
-                    {t.navTrackStatus}
-                  </button>
-                </SignInButton>
-              )}
-
-              {/* My History */}
-              {isSignedIn ? (
-                <Link
-                  className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px]"
-                  href="/history"
-                >
-                  {t.navMyHistory}
-                </Link>
-              ) : (
-                <SignInButton mode="modal">
-                  <button
-                    className="text-on-surface-variant hover:text-primary h-full flex items-center hover:bg-surface-container-low transition-colors px-3 font-medium text-[15px] cursor-pointer"
-                  >
-                    {t.navMyHistory}
-                  </button>
-                </SignInButton>
-              )}
-
-
-              {/* FAQ - Active */}
-              <Link
-                className="text-primary font-bold border-b-2 border-secondary-container pb-1 h-full flex items-center hover:bg-surface-container-low transition-colors px-3 text-[15px]"
-                href="/faq"
-              >
-                {t.navFaq}
-              </Link>
-            </div>
-          </div>
-
-          {/* Trailing Actions */}
-          <div className="flex items-center gap-3 h-full shrink-0">
-            <LanguageSelector />
-            {isSignedIn ? (
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "h-9 w-9",
-                  },
-                }}
-              />
-            ) : (
-              <SignInButton mode="modal">
-                <button className="hidden md:block bg-surface text-primary border border-outline-variant px-4 py-2 rounded-lg hover:bg-surface-container-low transition-colors font-semibold text-sm">
-                  {t.loginRegister}
-                </button>
-              </SignInButton>
-            )}
-            <button
-              onClick={() => setIsChoiceModalOpen(true)}
-              className="bg-secondary-container text-on-secondary-container px-5 py-2.5 rounded-lg font-bold hover:brightness-110 transition-all cursor-pointer shadow-xs text-sm"
-            >
-              {t.heroCtaFileNow}
-            </button>
-          </div>
-        </div>
-      </nav>
+      <SiteHeader
+        activeTab="faq"
+        onOpenFileChoiceModal={() => setIsChoiceModalOpen(true)}
+      />
 
       {/* Main Content Canvas */}
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-10 lg:py-14" id="faq-main">
